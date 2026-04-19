@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HandDodge — TensorFlow.js Game</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <!-- TensorFlow.js + HandPose -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="handstyle.css" />
+</head>
+<body>
+
+  <header>
+    <div class="logo">HAND<span>DODGE</span></div>
+    <div class="hud">
+      <div class="hud-item">
+        <div class="hud-label">Score</div>
+        <div class="hud-value" id="scoreDisplay">0</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Best</div>
+        <div class="hud-value" id="bestDisplay">0</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Lives</div>
+        <div class="hud-value" id="lives-display">♥♥♥</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Level</div>
+        <div class="hud-value" id="levelDisplay">1</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="game-wrapper">
+      <canvas id="gameCanvas" width="700" height="460"></canvas>
+
+      <!-- Start Screen -->
+      <div class="overlay" id="startScreen">
+        <h2>HANDDODGE</h2>
+        <p>Move your hand in front of the webcam to control the player.<br>
+           Dodge incoming obstacles to survive.</p>
+        <div id="loadingBar"><div id="loadingFill"></div></div>
+        <div id="loadingText">INITIALIZING HANDPOSE MODEL...</div>
+        <button class="btn" id="startBtn" disabled>START GAME</button>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div class="overlay hidden" id="gameOverScreen">
+        <div class="label-small">Game Over</div>
+        <div class="final-score" id="finalScore">0</div>
+        <div class="label-small">Score</div>
+        <p id="gameOverMsg">Keep practicing!</p>
+        <button class="btn" id="restartBtn">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <div class="cam-panel">
+      <div class="cam-box">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="handCanvas"></canvas>
+      </div>
+
+      <div class="status-box">
+        <div class="title">System Status</div>
+        <div class="status-row">
+          <span class="status-key">Camera</span>
+          <span class="status-val" id="camStatus">—</span>
+        </div>
+        <div class="status-row">
+          <span class="status-key">Model</span>
+          <span class="status-val" id="modelStatus">Loading...</span>
+        </div>
+        <div class="status-row">
+          <span class="status-key">Hand</span>
+          <span class="status-val" id="handStatus">—</span>
+        </div>
+        <div class="status-row">
+          <span class="status-key">X Pos</span>
+          <span class="status-val" id="xPosStatus">—</span>
+        </div>
+      </div>
+
+      <div class="instructions">
+        <div class="title">How to Play</div>
+        ✦ <span>Move hand</span> left/right to dodge<br>
+        ✦ <span>Raise hand</span> to move up<br>
+        ✦ <span>Lower hand</span> to move down<br>
+        ✦ Obstacles speed up over time<br>
+        ✦ 3 lives — each hit costs one
+      </div>
+    </div>
+  </main>
+
+  <!-- Game Script -->
+  <script src="handscript.js"></script>
+</body>
+</html>
