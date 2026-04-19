@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap');
+
+/* ─── RESET ─────────────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ─── BASE ───────────────────────────────────────────────────────────────────── */
+body {
+  background: #000;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+  user-select: none;
+}
+
+/* ─── CANVAS & VIDEO ─────────────────────────────────────────────────────────── */
+#gameCanvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#webcam {
+  display: none;
+}
+
+/* ─── HUD ────────────────────────────────────────────────────────────────────── */
+#hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  z-index: 20;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.hud-score {
+  font-family: 'Bangers', cursive;
+  font-size: 2.4rem;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 0 0 12px #ff6b35, 0 2px 0 #000;
+}
+
+.hud-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.hud-block {
+  text-align: center;
+}
+
+.hud-lives {
+  font-size: 1.6rem;
+  letter-spacing: 4px;
+}
+
+.hud-highscore {
+  font-family: 'Bangers', cursive;
+  font-size: 2.4rem;
+  letter-spacing: 2px;
+  color: #ffd700;
+  text-shadow: 0 0 12px #ff9900, 0 2px 0 #000;
+  text-align: right;
+}
+
+/* ─── OVERLAYS ───────────────────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* ─── START SCREEN ───────────────────────────────────────────────────────────── */
+#start-screen {
+  background: radial-gradient(ellipse at center, rgba(15, 10, 30, 0.88) 0%, rgba(5, 5, 15, 0.94) 100%);
+  backdrop-filter: blur(2px);
+}
+
+.title-main {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  color: #fff;
+  letter-spacing: 6px;
+  text-shadow: 0 0 30px #ff5500, 0 0 60px #ff2200, 4px 4px 0 #7a1a00;
+  margin-bottom: 8px;
+}
+
+.title-sub {
+  font-size: 0.9rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255, 180, 80, 0.8);
+  margin-bottom: 48px;
+}
+
+.fruit-row {
+  font-size: 3rem;
+  margin-bottom: 40px;
+  animation: floatRow 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatRow {
+  from { transform: translateY(-6px); }
+  to   { transform: translateY(6px); }
+}
+
+/* ─── BUTTONS ────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  font-family: 'Bangers', cursive;
+  font-size: 1.6rem;
+  letter-spacing: 4px;
+  padding: 14px 48px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #ff6b35, #ff2200);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 100, 50, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.1s, box-shadow 0.1s;
+  margin: 8px;
+}
+
+.btn-primary:hover  { transform: scale(1.06); box-shadow: 0 6px 28px rgba(255, 100, 50, 0.7); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  font-family: 'Bangers', cursive;
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  padding: 10px 32px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin: 8px;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hint {
+  margin-top: 28px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 2px;
+}
+
+/* ─── GAME OVER SCREEN ───────────────────────────────────────────────────────── */
+#gameover-screen {
+  background: radial-gradient(ellipse at center, rgba(20, 5, 5, 0.92) 0%, rgba(5, 5, 15, 0.96) 100%);
+  backdrop-filter: blur(3px);
+  display: none;
+}
+
+.go-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #ff2244;
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px #ff0022, 4px 4px 0 #5a0010;
+  margin-bottom: 24px;
+  animation: goShake 0.4s ease;
+}
+
+@keyframes goShake {
+  0%,  100% { transform: translateX(0); }
+  20%        { transform: translateX(-12px); }
+  40%        { transform: translateX(12px); }
+  60%        { transform: translateX(-8px); }
+  80%        { transform: translateX(8px); }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0 36px;
+}
+
+.stats-grid--bottom {
+  margin-top: 0;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 16px 24px;
+  text-align: center;
+}
+
+.stat-val {
+  font-family: 'Bangers', cursive;
+  font-size: 2.4rem;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.stat-lbl {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+}
+
+/* ─── LOADING SCREEN ─────────────────────────────────────────────────────────── */
+#loading-screen {
+  background: #05050f;
+}
+
+.loading-ring {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #ff6b35;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-title {
+  font-family: 'Bangers', cursive;
+  font-size: 1.8rem;
+  letter-spacing: 4px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.loading-sub {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── VIGNETTE ───────────────────────────────────────────────────────────────── */
+#vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 0.08s;
+}
+
+/* ─── LEVEL UP BANNER ────────────────────────────────────────────────────────── */
+#levelup-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-family: 'Bangers', cursive;
+  font-size: 4rem;
+  letter-spacing: 6px;
+  color: #ffd700;
+  text-shadow: 0 0 30px #ff9900, 4px 4px 0 #6a3e00;
+  z-index: 45;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  opacity: 0;
+}

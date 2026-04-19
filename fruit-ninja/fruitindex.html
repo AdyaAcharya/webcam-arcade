@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruit Ninja — Gesture Arcade</title>
+  <link rel="stylesheet" href="fruitstyle.css">
+</head>
+<body>
+
+  <canvas id="gameCanvas"></canvas>
+  <video id="webcam" autoplay playsinline muted></video>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-block">
+      <div class="hud-label">Score</div>
+      <div class="hud-score" id="hud-score">0</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Lives</div>
+      <div class="hud-lives" id="hud-lives">❤️❤️❤️</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Best</div>
+      <div class="hud-highscore" id="hud-highscore">0</div>
+    </div>
+  </div>
+
+  <div id="vignette"></div>
+  <div id="levelup-banner"></div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="overlay">
+    <div class="loading-ring"></div>
+    <div class="loading-title">Loading MediaPipe</div>
+    <div class="loading-sub">SETTING UP HAND TRACKING...</div>
+  </div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="overlay" style="display:none">
+    <div class="fruit-row">🍉 🍊 🍎 🍌 🍍 🍓</div>
+    <div class="title-main">FRUIT NINJA</div>
+    <div class="title-sub">Gesture Arcade</div>
+    <button class="btn-primary" onclick="startGame()">▶ PLAY</button>
+    <div class="hint">Move your index finger fast to slice • Avoid bombs 💣</div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameover-screen" class="overlay">
+    <div class="go-title">GAME OVER</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val" id="go-score">0</div><div class="stat-lbl">Score</div></div>
+      <div class="stat-box"><div class="stat-val" id="go-best">0</div><div class="stat-lbl">Best</div></div>
+      <div class="stat-box"><div class="stat-val" id="go-level">1</div><div class="stat-lbl">Level</div></div>
+    </div>
+    <div class="stats-grid stats-grid--bottom">
+      <div class="stat-box"><div class="stat-val" id="go-sliced">0</div><div class="stat-lbl">Sliced</div></div>
+      <div class="stat-box"><div class="stat-val" id="go-missed">0</div><div class="stat-lbl">Missed</div></div>
+      <div class="stat-box"><div class="stat-val" id="go-acc">0%</div><div class="stat-lbl">Accuracy</div></div>
+    </div>
+    <button class="btn-primary" onclick="startGame()">↩ PLAY AGAIN</button>
+    <button class="btn-secondary" onclick="goLobby()">🏠 Lobby</button>
+  </div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <script src="fruitscript.js"></script>
+</body>
+</html>
