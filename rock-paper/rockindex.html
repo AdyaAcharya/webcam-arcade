@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rock Paper Scissors AI</title>
+  <link rel="stylesheet" href="rockstyle.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- Scoreboard -->
+    <div id="scoreboard">
+      <div class="score-block">
+        <div class="score-label">You</div>
+        <div class="score-val blue" id="p-score">0</div>
+      </div>
+      <div class="score-block">
+        <div class="score-label">Ties</div>
+        <div class="score-val gray" id="t-score">0</div>
+      </div>
+      <div class="score-block">
+        <div class="score-label">Rounds</div>
+        <div class="score-val gray" id="r-score">0</div>
+      </div>
+      <div class="score-block">
+        <div class="score-label">AI</div>
+        <div class="score-val red" id="ai-score">0</div>
+      </div>
+    </div>
+
+    <!-- Arena -->
+    <div id="arena">
+
+      <!-- Player Panel -->
+      <div class="panel" id="player-panel">
+        <div id="video-wrap">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="overlay-canvas"></canvas>
+          <div id="gesture-badge">🤔 Detecting...</div>
+          <div id="no-hand">👋 Show your hand!</div>
+          <div id="start-screen">
+            <div class="start-icon">📷</div>
+            <div class="start-hint">Enable webcam to play</div>
+            <button id="cam-btn">Start Camera</button>
+            <div class="start-note">MediaPipe will detect your gestures</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Panel -->
+      <div id="center-panel">
+        <div id="bo5-info">Best of 5 — first to 3 wins</div>
+        <div id="countdown">✊✋✌️</div>
+        <div id="vs-text">VS</div>
+        <div id="result-text"></div>
+        <button id="play-btn">▶ Play Round</button>
+        <button id="reset-btn">Reset Score</button>
+      </div>
+
+      <!-- AI Panel -->
+      <div class="panel" id="ai-panel">
+        <div id="ai-thinking">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div id="ai-emoji">❓</div>
+        <div id="ai-label">AI is thinking...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Champion Banner -->
+  <div id="champion-banner">
+    <h2 id="champ-title">🏆 Champion!</h2>
+    <p id="champ-sub">First to 3 wins!</p>
+    <button id="champ-close">Play Again</button>
+  </div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js" crossorigin="anonymous"></script>
+
+  <script src="rockscript.js"></script>
+</body>
+</html>
