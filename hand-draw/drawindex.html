@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✋ HandDraw v2 — Gesture Edition</title>
+  <link rel="stylesheet" href="drawstyle.css">
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="overlay">
+    <div class="ov-title">✋ HandDraw v2</div>
+    <div class="ov-sub">Gesture-powered canvas</div>
+    <div class="ov-spinner"></div>
+    <ul class="ov-steps" id="ov-steps">
+      <li id="step-mp"><span class="wait">○</span> Loading MediaPipe…</li>
+      <li id="step-cam"><span class="wait">○</span> Requesting camera…</li>
+      <li id="step-model"><span class="wait">○</span> Initialising hand model…</li>
+    </ul>
+  </div>
+
+  <!-- Toolbar -->
+  <div id="toolbar">
+    <span class="tb-label">Color</span>
+    <div id="color-palette"></div>
+
+    <div class="tb-sep"></div>
+    <span class="tb-label">Size</span>
+    <div id="size-wrap">
+      <input type="range" id="brush-size-slider" min="2" max="50" value="6">
+      <div id="size-preview"><div id="size-dot"></div></div>
+    </div>
+
+    <div class="tb-sep"></div>
+    <button class="action-btn" id="undo-btn" disabled>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 14L4 9l5-5"/>
+        <path d="M4 9h11a6 6 0 0 1 0 12h-1"/>
+      </svg>
+      Undo
+    </button>
+    <button class="action-btn" id="redo-btn" disabled>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 14l5-5-5-5"/>
+        <path d="M20 9H9a6 6 0 0 0 0 12h1"/>
+      </svg>
+      Redo
+    </button>
+    <button class="action-btn" id="clear-btn">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14H6L5 6"/>
+        <path d="M10 11v6"/>
+        <path d="M14 11v6"/>
+        <path d="M9 6V4h6v2"/>
+      </svg>
+      Clear
+    </button>
+
+    <div id="status">
+      <div id="status-dot" class="loading"></div>
+      <span id="status-text">Initialising…</span>
+    </div>
+  </div>
+
+  <!-- Drawing Canvas -->
+  <canvas id="draw-canvas"></canvas>
+
+  <!-- Webcam (hidden) -->
+  <video id="webcam" autoplay playsinline muted></video>
+
+  <!-- Mode Badge (bottom-left) -->
+  <div id="mode-badge">
+    <div class="mode-pill" id="pill-draw">
+      <span class="pill-icon">☝️</span>
+      <span class="pill-dot"></span>
+      <span>Draw</span>
+    </div>
+    <div class="mode-pill" id="pill-move">
+      <span class="pill-icon">🖐️</span>
+      <span class="pill-dot"></span>
+      <span>Move</span>
+    </div>
+    <div class="mode-pill" id="pill-erase">
+      <span class="pill-icon">✊</span>
+      <span class="pill-dot"></span>
+      <span>Erase</span>
+    </div>
+  </div>
+
+  <!-- Gesture guide (above PIP) -->
+  <div id="gesture-guide">
+    <div class="guide-row">
+      <span class="guide-emoji">☝️</span>
+      <span class="guide-desc"><span class="guide-mode dm">Draw</span> — Index finger up</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-emoji">🖐️</span>
+      <span class="guide-desc"><span class="guide-mode mm">Move</span> — All fingers open</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-emoji">✊</span>
+      <span class="guide-desc"><span class="guide-mode em">Erase</span> — Closed fist</span>
+    </div>
+  </div>
+
+  <!-- PIP webcam preview -->
+  <div id="pip-wrap">
+    <div id="pip-label">Live View</div>
+    <canvas id="pip-canvas"></canvas>
+  </div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <script src="drawscript.js"></script>
+</body>
+</html>
