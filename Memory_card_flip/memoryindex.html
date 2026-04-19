@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Memory Card Flip</title>
+  <link rel="stylesheet" href="memorystyle.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js"></script>
+</head>
+<body>
+  <div id="root">
+    <div id="status-bar" style="display:none">
+      <div style="display:flex;gap:8px">
+        <div class="stat"><div class="stat-l">Moves</div><div class="stat-v" id="moves">0</div></div>
+        <div class="stat"><div class="stat-l">Time</div><div class="stat-v" id="timer">00:00</div></div>
+        <div class="stat"><div class="stat-l">Pairs</div><div class="stat-v" id="pairs">0/8</div></div>
+      </div>
+      <button id="new-btn" onclick="newGame()">New Game</button>
+    </div>
+
+    <div id="hint" style="display:none">Point your index finger at a card and hold for 1 second to flip it</div>
+
+    <div id="game-area" style="display:none">
+      <div id="cam-wrap">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div id="finger-dot"></div>
+      </div>
+      <div id="board-wrap">
+        <div id="board"></div>
+      </div>
+    </div>
+
+    <div id="win-wrap">
+      <div style="font-size:2.5rem">🎉</div>
+      <h3>You won!</h3>
+      <p id="win-info"></p>
+      <button id="start-btn" onclick="newGame()" style="margin-top:8px">Play Again</button>
+    </div>
+
+    <div id="start-screen">
+      <div style="font-size:2.5rem">🖐</div>
+      <h3>Webcam Memory Card Flip</h3>
+      <p>Use your hand! Point your index finger at a card and hold steady for 1 second to flip it. Find all matching pairs to win.</p>
+      <p style="font-size:12px;color:var(--color-text-secondary)">Requires camera permission. Works best with good lighting.</p>
+      <button id="start-btn" onclick="startGame()">Enable Camera & Play</button>
+    </div>
+  </div>
+
+  <script src="memoryscript.js"></script>
+</body>
+</html>
