@@ -1,0 +1,411 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:             #0e0e12;
+  --toolbar-bg:     #16161e;
+  --toolbar-border: #2a2a3a;
+  --surface:        #1e1e2a;
+  --surface2:       #26263a;
+  --accent:         #7c6af7;   /* purple  */
+  --accent2:        #f76a8a;   /* pink    */
+  --col-draw:       #7c6af7;   /* index-up = draw  */
+  --col-move:       #4caf87;   /* open hand = move */
+  --col-erase:      #f76a8a;   /* fist = erase     */
+  --text:           #e0e0f0;
+  --text-dim:       #6a6a8a;
+  --toolbar-h:      68px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── TOOLBAR ── */
+#toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--toolbar-h);
+  background: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.tb-label {
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+
+.tb-sep {
+  width: 1px;
+  height: 32px;
+  background: var(--toolbar-border);
+  margin: 0 6px;
+}
+
+/* Color swatches */
+#color-palette {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.2);
+}
+
+.color-swatch.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 14px rgba(124,106,247,.5);
+  transform: scale(1.15);
+}
+
+/* Brush size */
+#size-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#brush-size-slider {
+  -webkit-appearance: none;
+  width: 90px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface2);
+  outline: none;
+  cursor: pointer;
+}
+
+#brush-size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(124,106,247,.6);
+  cursor: pointer;
+}
+
+#size-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+#size-dot {
+  border-radius: 50%;
+  background: #fff;
+  transition: width .1s, height .1s;
+}
+
+/* Action buttons */
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--toolbar-border);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: #555;
+}
+
+.action-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+#clear-btn:hover:not(:disabled) {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+
+/* Status badge */
+#status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: .06em;
+}
+
+#status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #444;
+  transition: background .3s;
+}
+
+#status-dot.loading { background: #f9c74f; animation: pulse 1s infinite; }
+#status-dot.ready   { background: #4caf87; }
+#status-dot.active  { background: var(--accent2); animation: pulse .5s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .4; }
+}
+
+/* ── CANVAS ── */
+#draw-canvas {
+  position: fixed;
+  top: var(--toolbar-h);
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--toolbar-h));
+  cursor: none;
+}
+
+/* ── MODE BADGE (bottom-left) ── */
+#mode-badge {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.mode-pill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--toolbar-border);
+  background: rgba(14,14,18,.85);
+  backdrop-filter: blur(10px);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: all .25s;
+  opacity: 0.45;
+}
+
+.mode-pill.active {
+  opacity: 1;
+  border-color: var(--pill-color);
+  box-shadow: 0 0 12px var(--pill-glow);
+}
+
+.mode-pill .pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pill-color);
+  flex-shrink: 0;
+}
+
+.mode-pill .pill-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+#pill-draw  { --pill-color: var(--col-draw);  --pill-glow: rgba(124,106,247,.35); color: var(--col-draw);  }
+#pill-move  { --pill-color: var(--col-move);  --pill-glow: rgba(76,175,135,.35);  color: var(--col-move);  }
+#pill-erase { --pill-color: var(--col-erase); --pill-glow: rgba(247,106,138,.35); color: var(--col-erase); }
+
+/* ── PIP webcam (bottom-right) ── */
+#pip-wrap {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  width: 200px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid var(--toolbar-border);
+  box-shadow: 0 8px 40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.04);
+  background: #000;
+  z-index: 50;
+}
+
+#pip-label {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 8px;
+  letter-spacing: .14em;
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase;
+  font-weight: 700;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#pip-canvas {
+  width: 200px;
+  height: 150px;
+  display: block;
+}
+
+/* Gesture guide (above PIP) */
+#gesture-guide {
+  position: fixed;
+  bottom: 190px;
+  right: 18px;
+  width: 200px;
+  background: rgba(14,14,18,.9);
+  border: 1.5px solid var(--toolbar-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 8.5px;
+  letter-spacing: .08em;
+  color: var(--text-dim);
+  backdrop-filter: blur(8px);
+  z-index: 55;
+  pointer-events: none;
+}
+
+.guide-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+.guide-row:last-child {
+  border-bottom: none;
+}
+
+.guide-emoji {
+  font-size: 13px;
+  width: 18px;
+  text-align: center;
+}
+
+.guide-desc {
+  flex: 1;
+}
+
+.guide-mode {
+  font-weight: 700;
+}
+
+.guide-mode.dm { color: var(--col-draw);  }
+.guide-mode.mm { color: var(--col-move);  }
+.guide-mode.em { color: var(--col-erase); }
+
+/* Hidden video */
+#webcam {
+  display: none;
+}
+
+/* ── OVERLAY ── */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  z-index: 200;
+  transition: opacity .5s;
+}
+
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ov-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  background: linear-gradient(135deg, #7c6af7, #f76a8a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ov-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.ov-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ov-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: .08em;
+}
+
+.ov-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ov-steps .check { color: #4caf87; }
+.ov-steps .wait  { color: var(--text-dim); }
